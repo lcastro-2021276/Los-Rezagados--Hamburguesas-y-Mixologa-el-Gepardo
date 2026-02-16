@@ -10,18 +10,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/* ==========================
-   CONEXIÓN A MONGODB
-========================== */
+
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB conectado correctamente"))
     .catch(err => console.error("Error de conexión:", err));
 
-/* ==========================
-   MODELOS
-========================== */
 
-// 🔹 Role
 const roleSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true, trim: true, uppercase: true },
     description: { type: String, trim: true, default: "" },
@@ -39,7 +33,7 @@ const roleSchema = new mongoose.Schema({
 
 const Role = mongoose.model("Role", roleSchema);
 
-// 🔹 User
+
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true, minlength: 3 },
     email: { type: String, required: true, unique: true },
@@ -56,7 +50,7 @@ userSchema.methods.toJSON = function () {
 
 const User = mongoose.model("User", userSchema);
 
-// 🔹 Restaurant
+
 const Restaurant = mongoose.model("Restaurant", new mongoose.Schema({
     name: { type: String, required: true },
     address: String,
@@ -66,7 +60,7 @@ const Restaurant = mongoose.model("Restaurant", new mongoose.Schema({
     openingHours: String
 }, { timestamps: true }));
 
-// 🔹 Reservation
+
 const Reservation = mongoose.model("Reservation", new mongoose.Schema({
     customerName: { type: String, required: true },
     customerPhone: String,
@@ -76,7 +70,7 @@ const Reservation = mongoose.model("Reservation", new mongoose.Schema({
     restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant", required: true }
 }, { timestamps: true }));
 
-// 🔹 MenuItem
+
 const MenuItem = mongoose.model("MenuItem", new mongoose.Schema({
     name: { type: String, required: true },
     description: String,
@@ -84,9 +78,7 @@ const MenuItem = mongoose.model("MenuItem", new mongoose.Schema({
     restaurant: { type: mongoose.Schema.Types.ObjectId, ref: "Restaurant", required: true }
 }, { timestamps: true }));
 
-/* ==========================
-   RUTAS ROLES
-========================== */
+
 
 app.post("/roles", async (req, res) => {
     try {
@@ -127,9 +119,7 @@ app.get("/roles", async (req, res) => {
     }
 });
 
-/* ==========================
-   RUTAS USERS
-========================== */
+
 
 app.post("/users", async (req, res) => {
     try {
@@ -175,9 +165,6 @@ app.get("/users", async (req, res) => {
     }
 });
 
-/* ==========================
-    RUTAS login
-========================== */
 
     app.post("/login", async (req, res) => {
     try {
@@ -210,9 +197,7 @@ app.get("/users", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-/* ==========================
-   RUTAS RESTAURANTS
-========================== */
+
 
 app.post("/restaurants", async (req, res) => {
     try {
@@ -244,9 +229,7 @@ app.delete("/restaurants/:id", async (req, res) => {
     res.json({ message: "Restaurant eliminado correctamente" });
 });
 
-/* ==========================
-   RUTAS RESERVATIONS
-========================== */
+
 
 app.post("/reservations", async (req, res) => {
     try {
@@ -279,9 +262,7 @@ app.get("/reservations", async (req, res) => {
     res.json(reservations);
 });
 
-/* ==========================
-   RUTAS MENU ITEMS
-========================== */
+
 
 app.post("/menu-items", async (req, res) => {
     try {
@@ -322,9 +303,7 @@ app.delete("/menu-items/:id", async (req, res) => {
     res.json({ message: "Menu item eliminado correctamente" });
 });
 
-/* ==========================
-   SERVIDOR
-========================== */
+
 
 app.listen(3000, () => {
     console.log("Servidor corriendo en http://localhost:3000");

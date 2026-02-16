@@ -6,7 +6,7 @@ export const register = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        // Validaciones básicas
+      
         if (!name || !email || !password || !role) {
             return res.status(400).json({
                 message: "Nombre, correo, contraseña y rol son obligatorios"
@@ -32,14 +32,14 @@ export const register = async (req, res) => {
             });
         }
 
-        // Validar ObjectId
+       
         if (!mongoose.Types.ObjectId.isValid(role)) {
             return res.status(400).json({
                 message: "El ID del rol no es válido"
             });
         }
 
-        // Verificar que el rol exista
+        
         const roleExists = await Role.findById(role);
         if (!roleExists) {
             return res.status(400).json({
@@ -47,7 +47,7 @@ export const register = async (req, res) => {
             });
         }
 
-        // Verificar usuario duplicado
+        
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
@@ -55,7 +55,7 @@ export const register = async (req, res) => {
             });
         }
 
-        // Crear usuario (el hash lo hace el pre('save'))
+        
         const user = new User({
             name,
             email,
