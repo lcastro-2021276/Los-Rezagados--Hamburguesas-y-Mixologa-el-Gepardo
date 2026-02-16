@@ -96,7 +96,7 @@ Git instalado
 
 6. Instalación
 6.1 Clonar el Repositorio
-git clone https://github.com/usuario/Sistema-Restaurantes.git
+git clone https://github.com/usuario/Sistema-Restaurantes.git](https://github.com/lcastro-2021276/Los_Rezagados_Sistema_Restaurantes.git
 cd Sistema-Restaurantes
 
 7. Configuración del Authentication Service (.NET)
