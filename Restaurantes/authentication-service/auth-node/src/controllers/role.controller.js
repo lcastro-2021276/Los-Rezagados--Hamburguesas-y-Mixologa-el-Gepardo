@@ -1,6 +1,6 @@
 import Role from "../models/Role.js";
 
-// Crear rol
+
 export const createRole = async (req, res) => {
     try {
         const { name } = req.body;
@@ -34,7 +34,7 @@ export const createRole = async (req, res) => {
     }
 };
 
-// Obtener roles
+
 export const getRoles = async (req, res) => {
     try {
         const roles = await Role.find().sort({ createdAt: -1 });
