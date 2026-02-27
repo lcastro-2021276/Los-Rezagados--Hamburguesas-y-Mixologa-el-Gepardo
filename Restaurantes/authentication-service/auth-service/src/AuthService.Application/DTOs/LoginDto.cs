@@ -1,5 +1,3 @@
-namespace AuthService.Application.DTOs;
-
 public class LoginDto
 {
     public string Username { get; set; } = string.Empty;
