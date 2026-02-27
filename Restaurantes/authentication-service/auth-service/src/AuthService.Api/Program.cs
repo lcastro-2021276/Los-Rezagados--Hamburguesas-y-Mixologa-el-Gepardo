@@ -2,23 +2,22 @@ using AuthService.Application.Interfaces;
 using AuthService.Application.Services;
 using AuthService.Domain.Interfaces;
 using AuthService.Persistence.Repositories;
+using AuthService.Api.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ===============================
-//  Servicios básicos
-// ===============================
+// ====================
+// Controllers & Swagger
+// ====================
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// ===============================
-//  Configuración Swagger
-// ===============================
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -30,13 +29,12 @@ builder.Services.AddSwaggerGen(options =>
 
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
-        Scheme = "bearer",
-        BearerFormat = "JWT",
         Name = "Authorization",
+        Description = "Ingrese el token en formato: Bearer {token}",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
-        Description = "Ingrese el token en formato: Bearer {su_token}",
-
+        Scheme = "bearer",
+        BearerFormat = "JWT",
         Reference = new OpenApiReference
         {
             Id = "Bearer",
@@ -45,83 +43,102 @@ builder.Services.AddSwaggerGen(options =>
     };
 
     options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
-
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         { jwtSecurityScheme, Array.Empty<string>() }
     });
 });
 
-// ===============================
-//  Inyección de Dependencias
-// ===============================
+// ====================
+// JWT Configuration
+// ====================
+var jwtConfig = builder.Configuration.GetSection("Jwt");
 
-// Repositorio (temporal en memoria para pruebas)
+var key = jwtConfig["Key"]
+    ?? throw new InvalidOperationException("Jwt:Key no está configurado");
+var issuer = jwtConfig["Issuer"]
+    ?? throw new InvalidOperationException("Jwt:Issuer no está configurado");
+var audience = jwtConfig["Audience"]
+    ?? throw new InvalidOperationException("Jwt:Audience no está configurado");
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false; // ✅ LOCAL
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(key)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+// ====================
+// Authorization
+// ====================
+builder.Services.AddAuthorization();
+
+// ====================
+// Rate Limiting
+// ====================
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("ApiPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromSeconds(60),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2
+            }));
+});
+
+// ====================
+// Dependency Injection
+// ====================
 builder.Services.AddScoped<IUserRepository, InMemoryUserRepository>();
 
-// Servicio JWT
-builder.Services.AddScoped<IJwtService>(provider =>
+builder.Services.AddScoped<IJwtService>(_ =>
 {
-    var config = builder.Configuration.GetSection("Jwt");
-
-    var key = config["Key"] 
-        ?? throw new InvalidOperationException("Jwt:Key no está configurado");
-
-    var issuer = config["Issuer"] 
-        ?? throw new InvalidOperationException("Jwt:Issuer no está configurado");
-
-    var audience = config["Audience"] 
-        ?? throw new InvalidOperationException("Jwt:Audience no está configurado");
-
-    var expires = int.TryParse(config["ExpiresMinutes"], out int minutes)
+    var expires = int.TryParse(jwtConfig["ExpiresMinutes"], out int minutes)
         ? minutes
         : 60;
 
     return new JwtService(key, issuer, audience, expires);
 });
 
-// Servicio de autenticación
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAuthService, AuthService.Application.Services.AuthService>();
 
-// ===============================
-// Servicio JWT
-// ===============================
-builder.Services.AddScoped<IJwtService>(provider =>
-{
-    var config = builder.Configuration.GetSection("Jwt");
-
-    var key = config["Key"] 
-        ?? throw new InvalidOperationException("Jwt:Key no está configurado");
-
-    var issuer = config["Issuer"] 
-        ?? throw new InvalidOperationException("Jwt:Issuer no está configurado");
-
-    var audience = config["Audience"] 
-        ?? throw new InvalidOperationException("Jwt:Audience no está configurado");
-
-    var expires = int.TryParse(config["ExpiresMinutes"], out int minutes)
-        ? minutes
-        : 60;
-
-    return new JwtService(key, issuer, audience, expires);
-});
-
-
-// ===============================
-//  Middleware Pipeline
-// ===============================
+// ====================
+// App Pipeline
+// ====================
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// 🔥 Swagger SIEMPRE disponible en local
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.DocumentTitle = "Restaurant Auth API Docs";
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant Auth API v1");
+    c.RoutePrefix = "swagger";
+});
 
-app.UseHttpsRedirection();
+// ❌ NO HTTPS en local
+// app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
