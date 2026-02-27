@@ -1,201 +1,139 @@
-🍽️ Sistema de Gestión de Restaurantes
+# Sistema de Gestión de Restaurantes
 
-Nota:
-Este proyecto fue desarrollado con fines didácticos como parte del curso de Arquitectura de Software / Microservicios. Implementa una arquitectura basada en microservicios independientes, aplicando buenas prácticas de seguridad, autenticación y control de versiones.
+## Nota
+Este proyecto fue desarrollado con fines didácticos como parte del curso de **Arquitectura de Software / Microservicios**.  
+Implementa una arquitectura basada en microservicios independientes, aplicando buenas prácticas de seguridad, autenticación y control de versiones.
 
-📌 Descripción General
+---
 
-El Sistema de Gestión de Restaurantes es una aplicación backend basada en arquitectura de microservicios, diseñada para administrar usuarios, autenticación segura, restaurantes, menús y operaciones asociadas.
+## Descripción General
 
-El sistema combina tecnologías modernas como ASP.NET Core (.NET 8) para el servicio de autenticación y Node.js para los servicios de negocio, permitiendo escalabilidad, mantenibilidad y separación clara de responsabilidades.
+El **Sistema de Gestión de Restaurantes** es una aplicación backend basada en una arquitectura de microservicios, diseñada para administrar usuarios, autenticación segura, restaurantes, menús y operaciones asociadas.
 
-🧱 Arquitectura del Sistema
+El sistema combina tecnologías modernas como **ASP.NET Core (.NET 8)** para el servicio de autenticación y **Node.js** para los servicios de negocio, permitiendo una solución escalable, mantenible y con una clara separación de responsabilidades.
+
+---
+
+## Arquitectura del Sistema
 
 El sistema está dividido en microservicios independientes, cada uno responsable de una funcionalidad específica.
 
-🔹 Microservicios
-🔐 Authentication Service (.NET)
+### Microservicios
 
-Registro de usuarios
+### Authentication Service (.NET)
+- Registro de usuarios
+- Inicio de sesión
+- Generación y validación de tokens JWT
+- Verificación de correo electrónico
+- Recuperación y restablecimiento de contraseña
 
-Inicio de sesión
+### Restaurant Service (Node.js)
+- Gestión de restaurantes
+- Creación y actualización de información del restaurante
 
-Generación y validación de tokens JWT
+### Menu Service (Node.js)
+- Gestión de productos del menú
+- Asociación de menús a restaurantes
 
-Verificación de correo electrónico
+### Banking Service (Node.js – opcional)
+- Operaciones financieras internas
+- Manejo de transacciones (según implementación)
 
-Recuperación y restablecimiento de contraseña
+---
 
-🏪 Restaurant Service (Node.js)
+## Tecnologías Utilizadas
 
-Gestión de restaurantes
+### Backend
+- ASP.NET Core 8 (.NET 8)
+- Node.js
+- Express
+- MongoDB
+- Entity Framework Core
+- JWT (JSON Web Token)
+- BCrypt (encriptación de contraseñas)
 
-Creación y actualización de información del restaurante
+### Herramientas de Desarrollo
+- Git
+- GitHub
+- Postman
+- Visual Studio
+- Visual Studio Code
 
-📋 Menu Service (Node.js)
+---
+## Rutas Principales
 
-Gestión de productos del menú
+### Públicas
+| Método | Ruta                          | Descripción                     |
+| ------ | ----------------------------- | ------------------------------- |
+| POST   | /api/v1/auth/register         | Registro de usuario             |
+| POST   | /api/v1/auth/login            | Inicio de sesión y obtención JWT |
+| POST   | /api/v1/auth/verify-email     | Verificación de correo          |
+| POST   | /api/v1/auth/forgot-password  | Solicitud de recuperación       |
+| POST   | /api/v1/auth/reset-password   | Restablecer contraseña          |
 
-Asociación de menús a restaurantes
+---
 
-💳 Banking Service (Node.js – opcional)
+### Protegidas (requieren JWT)
+| Método | Ruta                          | Descripción                     |
+| ------ | ----------------------------- | ------------------------------- |
+| GET    | /api/v1/auth/profile          | Obtener perfil del usuario     |
+| GET    | /api/restaurants              | Listar restaurantes            |
+| POST   | /api/restaurants              | Crear restaurante              |
+| PUT    | /api/restaurants/{id}         | Actualizar restaurante         |
+| DELETE | /api/restaurants/{id}         | Eliminar restaurante           |
+| GET    | /api/menu                     | Listar productos del menú      |
+| POST   | /api/menu                     | Crear producto del menú        |
+| PUT    | /api/menu/{id}                | Actualizar producto del menú   |
+| DELETE | /api/menu/{id}                | Eliminar producto del menú     |
 
-Operaciones financieras internas
+---
 
-Manejo de transacciones (según implementación)
+## Estructura General del Proyecto
 
-⚙️ Tecnologías Utilizadas
-Backend
-
-ASP.NET Core 8 (.NET 8)
-
-Node.js
-
-Express
-
-MongoDB
-
-Entity Framework Core
-
-JWT (JSON Web Token)
-
-BCrypt (encriptación de contraseñas)
-
-Herramientas de Desarrollo
-
-Git
-
-GitHub
-
-Postman
-
-Visual Studio / Visual Studio Code
-
-📁 Estructura del Proyecto
-Sistema-Restaurantes/
-│
-├── authentication-service/
-│   └── auth-service/
-│
-├── restaurant-service/
-│
-├── menu-service/
-│
-├── banking-service/
-│
+Sistema-Restaurantes  
+│  
+├── authentication-service  
+│   ├── Controllers   – manejo de endpoints de autenticación  
+│   ├── Models        – entidades y modelos de usuario  
+│   ├── Services      – lógica de autenticación y JWT  
+│   ├── Middleware    – validaciones y seguridad  
+│   └── Program.cs / appsettings.json  
+│  
+├── restaurant-service  
+│   ├── Controllers   – gestión de restaurantes  
+│   ├── Models        – esquemas de restaurantes  
+│   ├── Routes        – definición de rutas  
+│   ├── Services      – lógica de negocio  
+│   └── app.js / server.js  
+│  
+├── menu-service  
+│   ├── Controllers   – gestión del menú  
+│   ├── Models        – esquemas de productos  
+│   ├── Routes        – rutas del menú  
+│   ├── Services      – lógica de negocio  
+│   └── app.js / server.js  
+│  
+├── banking-service (opcional)  
+│   ├── Controllers   – operaciones financieras  
+│   ├── Models        – transacciones  
+│   ├── Services      – lógica financiera  
+│   └── app.js / server.js  
+│  
 └── README.md
-📋 Requisitos Previos
+---
 
-Antes de ejecutar el proyecto, asegúrate de contar con:
+## Estado del Proyecto
+- Arquitectura base implementada  
+- Autenticación JWT funcional  
+- Separación por microservicios  
+- Conexión con MongoDB  
+- Control de versiones mediante Git  
 
-Node.js instalado
+---
 
-.NET 8 SDK instalado
+## Autores
 
-MongoDB en ejecución (local o Atlas)
+Proyecto desarrollado como parte del curso de **Taller de IN6AM de la jornada Matiutina**.
 
-Git instalado
-
-🚀 Instalación
-1️⃣ Clonar el repositorio
-git clone https://github.com/lcastro-2021276/Los_Rezagados_Sistema_Restaurantes.git
-cd Sistema-Restaurantes
-🔐 Configuración del Authentication Service (.NET)
-Restaurar dependencias
-cd authentication-service/auth-service
-dotnet restore
-Configurar appsettings.json
-
-Agregar la configuración JWT:
-
-"Jwt": {
-  "Key": "CLAVE_SECRETA_SEGURA",
-  "Issuer": "AuthService",
-  "Audience": "AuthServiceUsers"
-}
-Ejecutar el servicio
-dotnet run
-🟢 Configuración de los Servicios Node.js
-
-Para cada microservicio:
-
-cd restaurant-service
-npm install
-npm run dev
-
-Asegúrate de que el archivo .env contenga:
-
-MONGO_URI=mongodb://localhost:27017/restaurante_db
-JWT_SECRET=clave_super_secreta
-🔑 Autenticación y Seguridad
-
-El sistema utiliza JWT para proteger los endpoints.
-
-Flujo de autenticación
-
-El usuario se registra
-
-Se envía un correo de verificación
-
-El usuario verifica su correo
-
-Inicia sesión
-
-Se genera un token JWT
-
-El token se envía en el header:
-
-Authorization: Bearer TOKEN_GENERADO
-📡 Endpoints Principales
-Authentication Service
-
-POST /api/v1/auth/register
-
-POST /api/v1/auth/login
-
-POST /api/v1/auth/verify-email
-
-POST /api/v1/auth/forgot-password
-
-POST /api/v1/auth/reset-password
-
-GET /api/v1/auth/profile
-
-Restaurant Service
-
-GET /api/restaurants
-
-POST /api/restaurants
-
-PUT /api/restaurants/{id}
-
-DELETE /api/restaurants/{id}
-
-Menu Service
-
-GET /api/menu
-
-POST /api/menu
-
-PUT /api/menu/{id}
-
-DELETE /api/menu/{id}
-
-📊 Estado del Proyecto
-
-Arquitectura base implementada
-
-Autenticación JWT funcional
-
-Separación por microservicios
-
-Conexión con MongoDB
-
-Control de versiones mediante Git
-
-👥 Autores
-
-Proyecto desarrollado como parte del curso de Ingeniería en Sistemas.
-
-Equipo de desarrollo:
+**Equipo de desarrollo:**  
 Los Rezagados
