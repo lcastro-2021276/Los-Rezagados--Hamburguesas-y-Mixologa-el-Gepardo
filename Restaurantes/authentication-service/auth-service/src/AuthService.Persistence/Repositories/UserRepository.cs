@@ -1,66 +1,40 @@
 using AuthService.Domain.Entities;
 using AuthService.Domain.Interfaces;
+using AuthService.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Persistence.Repositories;
 
-public class InMemoryUserRepository : IUserRepository
+public class UserRepository : IUserRepository
 {
-    private readonly List<User> _users = new()
-    {
-        new User
-        {
-            Id = Guid.NewGuid().ToString(),
-            Username = "admin",
-            Email = "admin@example.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Rezagados123!*"),
-            Role = "ADMIN",
-            EmailConfirmed = true
-        }
-    };
+    private readonly ApplicationDbContext _context;
 
-    // ========================= GETTERS =========================
-
-    public Task<User?> GetByUsername(string username)
+    public UserRepository(ApplicationDbContext context)
     {
-        var user = _users.FirstOrDefault(u => u.Username == username);
-        return Task.FromResult(user);
+        _context = context;
     }
 
-    public Task<User?> GetByEmail(string email)
+    public Task<User?> GetByUsername(string username) =>
+        _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+    public Task<User?> GetByEmail(string email) =>
+        _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+    public Task<User?> GetByVerificationToken(string token) =>
+        _context.Users.FirstOrDefaultAsync(u => u.EmailVerificationToken == token);
+
+    public Task<User?> GetByResetToken(string token) =>
+        _context.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == token);
+
+    public async Task Add(User user)
     {
-        var user = _users.FirstOrDefault(u => u.Email == email);
-        return Task.FromResult(user);
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
     }
 
-    public Task<User?> GetByVerificationToken(string token)
+    public async Task Update(User user)
     {
-        var user = _users.FirstOrDefault(u => u.EmailVerificationToken == token);
-        return Task.FromResult(user);
-    }
-
-    public Task<User?> GetByResetToken(string token)
-    {
-        var user = _users.FirstOrDefault(u => u.PasswordResetToken == token);
-        return Task.FromResult(user);
-    }
-
-    // ========================= COMMANDS =========================
-
-    public Task Add(User user)
-    {
-        if (string.IsNullOrWhiteSpace(user.Id))
-            user.Id = Guid.NewGuid().ToString();
-
-        _users.Add(user);
-        return Task.CompletedTask;
-    }
-
-    public Task Update(User user)
-    {
-        var index = _users.FindIndex(u => u.Id == user.Id);
-        if (index != -1)
-            _users[index] = user;
-
-        return Task.CompletedTask;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
     }
 }
