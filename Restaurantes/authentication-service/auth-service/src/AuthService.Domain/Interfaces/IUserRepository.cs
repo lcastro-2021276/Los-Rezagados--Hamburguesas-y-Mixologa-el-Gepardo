@@ -4,6 +4,11 @@ namespace AuthService.Domain.Interfaces;
 
 public interface IUserRepository
 {
-    User? GetByUsername(string username);
-    User Add(User user);
+    Task<User?> GetByUsername(string username);
+    Task<User?> GetByEmail(string email);
+    Task<User?> GetByVerificationToken(string token);
+    Task<User?> GetByResetToken(string token);
+
+    Task Add(User user);
+    Task Update(User user);
 }

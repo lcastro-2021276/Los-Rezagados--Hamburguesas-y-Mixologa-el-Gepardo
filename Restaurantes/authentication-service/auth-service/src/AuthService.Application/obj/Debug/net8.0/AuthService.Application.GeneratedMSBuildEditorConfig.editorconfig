@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AuthService.Application
-build_property.ProjectDir = C:\Users\luisf\OneDrive\Documentos\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\
+build_property.ProjectDir = C:\Los Rezagados - Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
