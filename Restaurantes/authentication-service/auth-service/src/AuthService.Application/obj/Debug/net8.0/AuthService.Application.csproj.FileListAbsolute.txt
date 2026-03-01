@@ -74,3 +74,19 @@ C:\Los Rezagados - Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\au
 C:\Los Rezagados - Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\refint\AuthService.Application.dll
 C:\Los Rezagados - Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.pdb
 C:\Los Rezagados - Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\ref\AuthService.Application.dll
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\bin\Debug\net8.0\AuthService.Application.deps.json
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\bin\Debug\net8.0\AuthService.Application.dll
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\bin\Debug\net8.0\AuthService.Application.pdb
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\bin\Debug\net8.0\AuthService.Domain.dll
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.csproj.AssemblyReference.cache
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.AssemblyInfoInputs.cache
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.AssemblyInfo.cs
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.csproj.CoreCompileInputs.cache
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.sourcelink.json
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthServ.67992DEE.Up2Date
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.dll
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\refint\AuthService.Application.dll
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\AuthService.Application.pdb
+C:\Guepardo-Restaurant\Los_Rezagados_Sistema_Restaurantes\Restaurantes\authentication-service\auth-service\src\AuthService.Application\obj\Debug\net8.0\ref\AuthService.Application.dll

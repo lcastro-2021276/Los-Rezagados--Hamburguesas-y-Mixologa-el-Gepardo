@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Yx/kuU5MsQE=",
+  "dgSpecHash": "guprdNrLts4=",
   "success": true,
-  "projectFilePath": "C:\\Los Rezagados - Restaurant\\Los_Rezagados_Sistema_Restaurantes\\Restaurantes\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
+  "projectFilePath": "C:\\Guepardo-Restaurant\\Los_Rezagados_Sistema_Restaurantes\\Restaurantes\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luisf\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\luisf\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",

@@ -1,18 +1,18 @@
 version: '3.8'
 
 services:
-  postgres:
+  restaurants_postgres:
     image: postgres:13
-    container_name: in6am_postgres
+    container_name: restaurants_postgres_db
     environment:
-      POSTGRES_USER: IN6AM
-      POSTGRES_PASSWORD: In6amKnl!
-      POSTGRES_DB: kinal_sports
+      POSTGRES_USER: RESTAURANTES
+      POSTGRES_PASSWORD: Restaurantes123!
+      POSTGRES_DB: restaurantes_db
     ports:
       - "5435:5432"
     volumes:
-      - postgres_data:/var/lib/postgressql/data
+      - restaurants_postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  restaurants_postgres_data:

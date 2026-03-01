@@ -1,10 +1,12 @@
 using AuthService.Application.Interfaces;
 using AuthService.Application.Services;
 using AuthService.Domain.Interfaces;
+using AuthService.Persistence.Data;
 using AuthService.Persistence.Repositories;
 using AuthService.Api.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -27,26 +29,40 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Servicio de autenticación para el Sistema de Gestión de Restaurantes"
     });
 
-    var jwtSecurityScheme = new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Description = "Ingrese el token en formato: Bearer {token}",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = "bearer",
-        BearerFormat = "JWT",
-        Reference = new OpenApiReference
-        {
-            Id = "Bearer",
-            Type = ReferenceType.SecurityScheme
-        }
-    };
+        BearerFormat = "JWT"
+    });
 
-    options.AddSecurityDefinition("Bearer", jwtSecurityScheme);
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        { jwtSecurityScheme, Array.Empty<string>() }
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
+});
+
+// ====================
+// Database (PostgreSQL)
+// ====================
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsql => npgsql.MigrationsAssembly("AuthService.Persistence")
+    );
 });
 
 // ====================
@@ -54,18 +70,15 @@ builder.Services.AddSwaggerGen(options =>
 // ====================
 var jwtConfig = builder.Configuration.GetSection("Jwt");
 
-var key = jwtConfig["Key"]
-    ?? throw new InvalidOperationException("Jwt:Key no está configurado");
-var issuer = jwtConfig["Issuer"]
-    ?? throw new InvalidOperationException("Jwt:Issuer no está configurado");
-var audience = jwtConfig["Audience"]
-    ?? throw new InvalidOperationException("Jwt:Audience no está configurado");
+var key = jwtConfig["Key"]!;
+var issuer = jwtConfig["Issuer"]!;
+var audience = jwtConfig["Audience"]!;
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false; // LOCAL
+        options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -82,23 +95,17 @@ builder.Services
     });
 
 // ====================
-// Authorization
-// ====================
-builder.Services.AddAuthorization();
-
-// ====================
 // Rate Limiting
 // ====================
 builder.Services.AddRateLimiter(options =>
 {
     options.AddPolicy("ApiPolicy", context =>
         RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
-            factory: _ => new FixedWindowRateLimiterOptions
+            context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 10,
                 Window = TimeSpan.FromSeconds(60),
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
                 QueueLimit = 2
             }));
 });
@@ -106,14 +113,10 @@ builder.Services.AddRateLimiter(options =>
 // ====================
 // Dependency Injection
 // ====================
-builder.Services.AddScoped<IUserRepository, InMemoryUserRepository>();
-
-builder.Services.AddScoped<IJwtService>(_ =>
+builder.Services.AddScoped<IUserRepository, UserRepository>(); // 🔥 EF CORE
+builder.Services.AddScoped<IJwtService>(sp =>
 {
-    var expires = int.TryParse(jwtConfig["ExpiresMinutes"], out int minutes)
-        ? minutes
-        : 60;
-
+    var expires = int.TryParse(jwtConfig["ExpiresMinutes"], out var m) ? m : 60;
     return new JwtService(key, issuer, audience, expires);
 });
 
@@ -125,22 +128,14 @@ builder.Services.AddScoped<IAuthService, AuthService.Application.Services.AuthSe
 // ====================
 var app = builder.Build();
 
-// Swagger SIEMPRE disponible en local
 app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant Auth API v1");
-    c.RoutePrefix = "swagger";
-});
+app.UseSwaggerUI();
 
-// Middleware global de excepciones
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseRateLimiter();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();
