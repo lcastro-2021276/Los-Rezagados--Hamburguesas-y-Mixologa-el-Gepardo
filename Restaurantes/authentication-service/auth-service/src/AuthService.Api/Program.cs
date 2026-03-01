@@ -65,7 +65,7 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false; // ✅ LOCAL
+        options.RequireHttpsMetadata = false; // LOCAL
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -125,7 +125,7 @@ builder.Services.AddScoped<IAuthService, AuthService.Application.Services.AuthSe
 // ====================
 var app = builder.Build();
 
-// 🔥 Swagger SIEMPRE disponible en local
+// Swagger SIEMPRE disponible en local
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -133,9 +133,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
-// ❌ NO HTTPS en local
-// app.UseHttpsRedirection();
-
+// Middleware global de excepciones
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseRateLimiter();
