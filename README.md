@@ -1,7 +1,7 @@
 # Sistema de Gestión de Restaurantes
 
 ## Nota
-Este proyecto fue desarrollado con fines didácticos como parte del curso de **Arquitectura de Software / Microservicios**.  
+Este proyecto fue desarrollado con fines didácticos como parte del curso de **Taller de IN6AM de la jornada Matiutina.**.  
 Implementa una arquitectura basada en microservicios independientes, aplicando buenas prácticas de seguridad, autenticación y control de versiones.
 
 ---
